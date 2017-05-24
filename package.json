@@ -1,0 +1,45 @@
+{
+  "name": "d3-force-magnetic",
+  "version": "0.1.0",
+  "description": "A magnetic/electrostatic/gravitational link force type for the d3-force simulation engine.",
+  "keywords": [
+    "d3",
+    "d3-module",
+    "d3-force",
+    "magnetic",
+    "electrostatic",
+    "gravity",
+    "attraction",
+    "physics",
+    "layout",
+    "graph",
+    "force",
+    "simulation"
+  ],
+  "homepage": "https://github.com/vasturiano/d3-force-magnetic",
+  "license": "MIT",
+  "author": {
+    "name": "Vasco Asturiano",
+    "url": "https://bl.ocks.org/vasturiano"
+  },
+  "main": "dist/d3-force-magnetic.js",
+  "module": "src/index",
+  "jsnext:main": "src/index",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vasturiano/d3-force-magnetic.git"
+  },
+  "scripts": {
+    "build": "rm -rf dist && mkdir dist && rollup --banner \"$(preamble)\" -f umd -n d3 -o dist/d3-force-magnetic.js -- src/index.js",
+    "watch": "rollup -w -f umd -n d3 -o dist/d3-force-magnetic.js -- src/index.js",
+    "minify": "uglifyjs dist/d3-force-magnetic.js -o dist/d3-force-magnetic.min.js -c -m --preamble \"$(preamble)\"",
+    "prepublish": "npm run build && npm run minify"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "package-preamble": "~0.0.2",
+    "rollup": "~0.41.6",
+    "rollup-watch": "^3.2",
+    "uglify-js-es6": "^2.8.9"
+  }
+}
