@@ -4,12 +4,18 @@ export default function() {
     let nodes,
         links = [],
         id = (node => node.index),              // accessor: node unique id
-        charge = (node => 1),                   // accessor: number
-        strength = (link => 1);                 // accessor: 0 <= number <= 1
+        charge = (node => 1),                   // accessor: number (equivalent to node mass)
+        strength = (link => 1);                 // accessor: 0 <= number <= 1 (equivalent to G constant)
 
     function force() {
         links.forEach(link => {
-            //
+            const d2 = Math.pow(link.source.x-link.target.x, 2) + Math.pow(link.source.y-link.target.y, 2);
+            if (d2 === 0) return;
+
+            // Intensity falls quadratically with distance
+            const relStrength = strength(link) / d2;
+            const sourceAcceleration = charge(link.target) * relStrength;
+            const targetAcceleration = charge(link.source) * relStrength;
         });
     }
 
