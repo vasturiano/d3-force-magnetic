@@ -9,14 +9,36 @@ export default function() {
 
     function force() {
         links.forEach(link => {
-            const d2 = Math.pow(link.source.x-link.target.x, 2) + Math.pow(link.source.y-link.target.y, 2);
-            if (d2 === 0) return;
+            const d = cart2Polar(link.target.x-link.source.x, link.target.y-link.source.y);
+            if (d.d === 0) return;
 
             // Intensity falls quadratically with distance
-            const relStrength = strength(link) / d2;
-            const sourceAcceleration = charge(link.target) * relStrength;
-            const targetAcceleration = charge(link.source) * relStrength;
+            const relStrength = strength(link) / (d.d*d.d);
+            const sourceAcceleration = polar2Cart(charge(link.target) * relStrength, d.a);
+            const targetAcceleration = polar2Cart(charge(link.source) * relStrength, d.a + Math.PI);
+
+            [[link.source, sourceAcceleration], [link.target, targetAcceleration]].forEach(([node, acceleration]) => {
+                node.vx += acceleration.x;
+                node.vy += acceleration.y;
+            });
         });
+
+        //
+
+        function cart2Polar(x, y) {
+            x = x||0; // Normalize -0 to 0 to avoid -Infinity issues in atan
+            return {
+                d: Math.sqrt(x*x + y*y),
+                a: (x === 0 && y === 0) ? 0 : Math.atan(y/x) + (x<0 ? Math.PI : 0) // Add PI for coords in 2nd & 3rd quadrants
+            }
+        }
+
+        function polar2Cart(d, a) {
+            return {
+                x: d * Math.cos(a),
+                y: d * Math.sin(a)
+            }
+        }
     }
 
     function initialize() {
