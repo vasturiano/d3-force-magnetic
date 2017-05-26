@@ -1,7 +1,7 @@
 import constant from './constant';
 
 export default function() {
-    let nodes,
+    let nodes = [],
         links = [],
         id = (node => node.index),              // accessor: node unique id
         charge = (node => 1),                   // accessor: number (equivalent to node mass)
@@ -48,8 +48,8 @@ export default function() {
         });
 
         links.forEach(link => {
-            if (typeof link.source !== "object") link.source = nodesById[link.source];
-            if (typeof link.target !== "object") link.target = nodesById[link.target];
+            if (typeof link.source !== "object") link.source = nodesById[link.source] || link.source;
+            if (typeof link.target !== "object") link.target = nodesById[link.target] || link.target;
         });
     }
 
