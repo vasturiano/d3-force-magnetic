@@ -7,13 +7,13 @@ export default function() {
         charge = (node => 1),                   // accessor: number (equivalent to node mass)
         strength = (link => 1);                 // accessor: 0 <= number <= 1 (equivalent to G constant)
 
-    function force() {
+    function force(alpha) {
         links.forEach(link => {
             const d = cart2Polar(link.target.x-link.source.x, link.target.y-link.source.y);
             if (d.d === 0) return;
 
             // Intensity falls quadratically with distance
-            const relStrength = strength(link) / (d.d*d.d);
+            const relStrength = alpha * strength(link) / (d.d*d.d);
             const sourceAcceleration = polar2Cart(charge(link.target) * relStrength, d.a);
             const targetAcceleration = polar2Cart(charge(link.source) * relStrength, d.a + Math.PI);
 
