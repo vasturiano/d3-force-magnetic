@@ -8,7 +8,18 @@ export default function() {
         strength = (link => 1);                 // accessor: 0 <= number <= 1 (equivalent to G constant)
 
     function force(alpha) {
-        links.forEach(link => {
+
+        let nodeLinks = links;
+
+        if (!links.length) { // Assume full node mesh
+            nodeLinks = [];
+            nodes.forEach((a, aIdx) => {
+                nodes.filter((_, bIdx) => bIdx > aIdx) // Prevent linking same node pair more than once
+                    .forEach(b => { nodeLinks.push({ source: a, target: b }) });
+            })
+        }
+
+        nodeLinks.forEach(link => {
             const d = cart2Polar(link.target.x-link.source.x, link.target.y-link.source.y);
             if (d.d === 0) return;
 
