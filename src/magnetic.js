@@ -4,7 +4,7 @@ export default function() {
     let nodes = [],
         links = [],
         id = (node => node.index),              // accessor: node unique id
-        charge = (node => 1),                   // accessor: number (equivalent to node mass)
+        charge = (node => 100),                   // accessor: number (equivalent to node mass)
         strength = (link => 1);                 // accessor: 0 <= number <= 1 (equivalent to G constant)
 
     function force(alpha) {
