@@ -21,15 +21,14 @@ export default function() {
                 if (d === 0 || d > maxDistance) continue;
 
                 // Intensity falls quadratically with distance
-                const relStrength = alpha * strength(link) / (d * d);
-                const a = distAngle(dx, dy);
-                const sourceAcceleration = polar2Cart(charge(link.target) * relStrength, a);
-                const targetAcceleration = polar2Cart(charge(link.source) * relStrength, a + Math.PI);
+                const relStrength = alpha * strength(link) / (d*d);
+                const sourceRelAcceleration = charge(link.target) * relStrength / d;
+                const targetRelAcceleration = charge(link.source) * relStrength / d;
 
-                link.source.vx += sourceAcceleration.x;
-                link.source.vy += sourceAcceleration.y;
-                link.target.vx += targetAcceleration.x;
-                link.target.vy += targetAcceleration.y;
+                link.source.vx += dx * sourceRelAcceleration;
+                link.source.vy += dy * sourceRelAcceleration;
+                link.target.vx += dx * targetRelAcceleration;
+                link.target.vy += dy * targetRelAcceleration;
             }
         } else { // Assume full node mesh if no links specified
             const tree = quadtree(nodes, d=>d.x, d=>d.y)
@@ -49,13 +48,9 @@ export default function() {
                     // Apply the Barnes-Hut approximation if possible.
                     if ((x2-x1) / d < theta) {
                         if (d > 0 && d <= maxDistance) {
-                            const acceleration = polar2Cart(
-                                quad.value * etherStrength / (d*d),
-                                distAngle(dx, dy)
-                            );
-
-                            node.vx += acceleration.x;
-                            node.vy += acceleration.y;
+                            const relAcceleration = quad.value * etherStrength / (d*d) / d;
+                            node.vx += dx * relAcceleration;
+                            node.vy += dy * relAcceleration;
                         }
                         return true;
                     }
@@ -64,13 +59,9 @@ export default function() {
                     else if (quad.length || d === 0 || d > maxDistance) return;
 
                     do if (quad.data !== node) {
-                        const acceleration = polar2Cart(
-                            charge(quad.data) * etherStrength / (d*d),
-                            distAngle(dx, dy)
-                        );
-
-                        node.vx += acceleration.x;
-                        node.vy += acceleration.y;
+                        const relAcceleration = charge(quad.data) * etherStrength / (d*d) / d;
+                        node.vx += dx * relAcceleration;
+                        node.vy += dy * relAcceleration;
                     } while (quad = quad.next);
                 });
             }
@@ -106,18 +97,6 @@ export default function() {
 
         function distance(x, y) {
             return Math.sqrt(x*x + y*y);
-        }
-
-        function distAngle(x, y) {
-            x = x||0; // Normalize -0 to 0 to avoid -Infinity issues in atan
-            return (x === 0 && y === 0) ? 0 : Math.atan(y/x) + (x<0 ? Math.PI : 0); // Add PI for coords in 2nd & 3rd quadrants
-        }
-
-        function polar2Cart(d, a) {
-            return {
-                x: d * Math.cos(a),
-                y: d * Math.sin(a)
-            }
         }
     }
 
