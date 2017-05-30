@@ -19,7 +19,7 @@ export default function() {
 
                 if (d === 0) continue;
 
-                // Intensity falls quadratically with distance
+                // Intensity falls with the square of the distance (inverse-square law)
                 const relStrength = alpha * strength(link) / (d*d);
                 const sourceRelAcceleration = charge(link.target) * relStrength / d;
                 const targetRelAcceleration = charge(link.source) * relStrength / d;
@@ -47,7 +47,7 @@ export default function() {
                     // Apply the Barnes-Hut approximation if possible.
                     if ((x2-x1) / d < theta) {
                         if (d > 0) {
-                            const relAcceleration = quad.value * etherStrength / (d*d) / d;
+                            const relAcceleration = quad.value * etherStrength / (d*d);
                             node.vx += dx * relAcceleration;
                             node.vy += dy * relAcceleration;
                         }
@@ -58,7 +58,7 @@ export default function() {
                     else if (quad.length || d === 0) return;
 
                     do if (quad.data !== node) {
-                        const relAcceleration = charge(quad.data) * etherStrength / (d*d) / d;
+                        const relAcceleration = charge(quad.data) * etherStrength / (d*d);
                         node.vx += dx * relAcceleration;
                         node.vy += dy * relAcceleration;
                     } while (quad = quad.next);
