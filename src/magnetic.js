@@ -7,7 +7,6 @@ export default function() {
         id = (node => node.index),              // accessor: node unique id
         charge = (node => 100),                 // accessor: number (equivalent to node mass)
         strength = (link => 1),                 // accessor: 0 <= number <= 1 (equivalent to G constant)
-        maxDistance = Infinity,
         theta = 0.9;
 
     function force(alpha) {
@@ -18,7 +17,7 @@ export default function() {
                     dy = link.target.y - link.source.y,
                     d = distance(dx, dy);
 
-                if (d === 0 || d > maxDistance) continue;
+                if (d === 0) continue;
 
                 // Intensity falls quadratically with distance
                 const relStrength = alpha * strength(link) / (d*d);
@@ -47,7 +46,7 @@ export default function() {
 
                     // Apply the Barnes-Hut approximation if possible.
                     if ((x2-x1) / d < theta) {
-                        if (d > 0 && d <= maxDistance) {
+                        if (d > 0) {
                             const relAcceleration = quad.value * etherStrength / (d*d) / d;
                             node.vx += dx * relAcceleration;
                             node.vy += dy * relAcceleration;
@@ -56,7 +55,7 @@ export default function() {
                     }
 
                     // Otherwise, process points directly.
-                    else if (quad.length || d === 0 || d > maxDistance) return;
+                    else if (quad.length || d === 0) return;
 
                     do if (quad.data !== node) {
                         const relAcceleration = charge(quad.data) * etherStrength / (d*d) / d;
@@ -124,11 +123,6 @@ export default function() {
     // Node id
     force.id = function(_) {
         return arguments.length ? (id = _, force) : id;
-    };
-
-    // max distance for force to act (saves computation for far-away nodes)
-    force.maxDistance = function(_) {
-        return arguments.length ? (maxDistance = _, force) : maxDistance;
     };
 
     // Node capacity to attract (positive) or repel (negative)
