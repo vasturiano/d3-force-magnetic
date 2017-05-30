@@ -1,38 +1,108 @@
 import constant from './constant';
+import {quadtree} from 'd3-quadtree';
 
 export default function() {
     let nodes = [],
         links = [],
-        fullMeshLinks = [],
         id = (node => node.index),              // accessor: node unique id
-        charge = (node => 100),                   // accessor: number (equivalent to node mass)
+        charge = (node => 100),                 // accessor: number (equivalent to node mass)
         strength = (link => 1),                 // accessor: 0 <= number <= 1 (equivalent to G constant)
-        maxDistance = Infinity;
+        maxDistance = Infinity,
+        theta = 0.9;
 
     function force(alpha) {
-        const nodeLinks = links.length ? links : fullMeshLinks; // Assume full node mesh if no links specified
+        if (links.length) { // Pre-set node pairs
+            for (let i = 0; i < links.length; i++) {
+                const link = nodeLinks[i],
+                    dx = link.target.x - link.source.x,
+                    dy = link.target.y - link.source.y,
+                    d = distance(dx, dy);
 
-        for (let i=0; i < nodeLinks.length; i++) {
-            const link = nodeLinks[i],
-                dx = link.target.x-link.source.x,
-                dy = link.target.y-link.source.y,
-                d = distance(dx, dy);
+                if (d === 0 || d > maxDistance) continue;
 
-            if (d === 0 || d > maxDistance) continue;
+                // Intensity falls quadratically with distance
+                const relStrength = alpha * strength(link) / (d * d);
+                const a = distAngle(dx, dy);
+                const sourceAcceleration = polar2Cart(charge(link.target) * relStrength, a);
+                const targetAcceleration = polar2Cart(charge(link.source) * relStrength, a + Math.PI);
 
-            // Intensity falls quadratically with distance
-            const relStrength = alpha * strength(link) / (d*d);
-            const a = distAngle(dx, dy);
-            const sourceAcceleration = polar2Cart(charge(link.target) * relStrength, a);
-            const targetAcceleration = polar2Cart(charge(link.source) * relStrength, a + Math.PI);
+                link.source.vx += sourceAcceleration.x;
+                link.source.vy += sourceAcceleration.y;
+                link.target.vx += targetAcceleration.x;
+                link.target.vy += targetAcceleration.y;
+            }
+        } else { // Assume full node mesh if no links specified
+            const tree = quadtree(nodes, d=>d.x, d=>d.y)
+                .visitAfter(quadAccumulate);
 
-            link.source.vx += sourceAcceleration.x;
-            link.source.vy += sourceAcceleration.y;
-            link.target.vx += targetAcceleration.x;
-            link.target.vy += targetAcceleration.y;
+            const etherStrength = alpha * strength();
+
+            for (let i = 0; i < nodes.length; i++) {
+                const node = nodes[i];
+                tree.visit((quad, x1, _, x2) => {
+                    if (!quad.value) return true;
+
+                    var dx = quad.x - node.x,
+                        dy = quad.y - node.y,
+                        d = distance(dx, dy);
+
+                    // Apply the Barnes-Hut approximation if possible.
+                    if ((x2-x1) / d < theta) {
+                        if (d > 0 && d <= maxDistance) {
+                            const acceleration = polar2Cart(
+                                quad.value * etherStrength / (d*d),
+                                distAngle(dx, dy)
+                            );
+
+                            node.vx += acceleration.x;
+                            node.vy += acceleration.y;
+                        }
+                        return true;
+                    }
+
+                    // Otherwise, process points directly.
+                    else if (quad.length || d === 0 || d > maxDistance) return;
+
+                    do if (quad.data !== node) {
+                        const acceleration = polar2Cart(
+                            charge(quad.data) * etherStrength / (d*d),
+                            distAngle(dx, dy)
+                        );
+
+                        node.vx += acceleration.x;
+                        node.vy += acceleration.y;
+                    } while (quad = quad.next);
+                });
+            }
         }
 
         //
+
+        function quadAccumulate(quad) {
+            var localCharge = 0, q, c, x, y, i;
+
+            // For internal nodes, accumulate forces from child quadrants.
+            if (quad.length) {
+                for (x = y = i = 0; i < 4; ++i) {
+                    if ((q = quad[i]) && (c = q.value)) {
+                        localCharge += c, x += c * q.x, y += c * q.y;
+                    }
+                }
+                quad.x = x / localCharge;
+                quad.y = y / localCharge;
+            }
+
+            // For leaf nodes, accumulate forces from coincident quadrants.
+            else {
+                q = quad;
+                q.x = q.data.x;
+                q.y = q.data.y;
+                do localCharge += charge(q.data);
+                while (q = q.next);
+            }
+
+            quad.value = localCharge;
+        }
 
         function distance(x, y) {
             return Math.sqrt(x*x + y*y);
@@ -61,13 +131,6 @@ export default function() {
             if (typeof link.source !== "object") link.source = nodesById[link.source] || link.source;
             if (typeof link.target !== "object") link.target = nodesById[link.target] || link.target;
         });
-
-        // Reset full-mesh links
-        fullMeshLinks = [];
-        nodes.forEach((a, aIdx) => {
-            nodes.filter((_, bIdx) => bIdx > aIdx) // Prevent linking same node pair more than once
-                .forEach(b => { fullMeshLinks.push({ source: a, target: b }) });
-            });
     }
 
     force.initialize = function(_) {
@@ -97,6 +160,11 @@ export default function() {
     // Link strength (ability of the medium to propagate charges)
     force.strength = function(_) {
         return arguments.length ? (strength = typeof _ === "function" ? _ : constant(+_), force) : strength;
+    };
+
+    // Barnes-Hut approximation tetha threshold (for full-mesh mode)
+    force.theta = function(_) {
+        return arguments.length ? (theta = _, force) : theta;
     };
 
     return force;

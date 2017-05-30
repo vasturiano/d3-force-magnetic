@@ -30,15 +30,18 @@
     "url": "https://github.com/vasturiano/d3-force-magnetic.git"
   },
   "scripts": {
-    "build": "rm -rf dist && mkdir dist && rollup --banner \"$(preamble)\" -f umd -n d3 -o dist/d3-force-magnetic.js -- src/index.js",
-    "watch": "rollup -w -f umd -n d3 -o dist/d3-force-magnetic.js -- src/index.js",
+    "build": "rm -rf dist && mkdir dist && rollup -c --banner \"$(preamble)\" -f umd -n d3 -o dist/d3-force-magnetic.js -- src/index.js",
+    "watch": "rollup -c -w -f umd -n d3 -o dist/d3-force-magnetic.js -- src/index.js",
     "minify": "uglifyjs dist/d3-force-magnetic.js -o dist/d3-force-magnetic.min.js -c -m --preamble \"$(preamble)\"",
     "prepublish": "npm run build && npm run minify"
   },
-  "dependencies": {},
+  "dependencies": {
+    "d3-quadtree": "^1.0"
+  },
   "devDependencies": {
     "package-preamble": "~0.0.2",
     "rollup": "~0.41.6",
+    "rollup-plugin-node-resolve": "^3.0",
     "rollup-watch": "^3.2",
     "uglify-js-es6": "^2.8.9"
   }
