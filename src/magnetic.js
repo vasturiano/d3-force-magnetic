@@ -26,10 +26,10 @@ export default function() {
             const sourceAcceleration = polar2Cart(charge(link.target) * relStrength, a);
             const targetAcceleration = polar2Cart(charge(link.source) * relStrength, a + Math.PI);
 
-            [[link.source, sourceAcceleration], [link.target, targetAcceleration]].forEach(([node, acceleration]) => {
-                node.vx += acceleration.x;
-                node.vy += acceleration.y;
-            });
+            link.source.vx += sourceAcceleration.x;
+            link.source.vy += sourceAcceleration.y;
+            link.target.vx += targetAcceleration.x;
+            link.target.vy += targetAcceleration.y;
         }
 
         //
