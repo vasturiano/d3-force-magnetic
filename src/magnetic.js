@@ -21,13 +21,13 @@ export default function() {
 
                 // Intensity falls with the square of the distance (inverse-square law)
                 const relStrength = alpha * strength(link) / (d*d);
-                const sourceRelAcceleration = charge(link.target) * relStrength / d;
-                const targetRelAcceleration = charge(link.source) * relStrength / d;
+                const sourceAcceleration = charge(link.target) * relStrength;
+                const targetAcceleration = charge(link.source) * relStrength;
 
-                link.source.vx += dx * sourceRelAcceleration;
-                link.source.vy += dy * sourceRelAcceleration;
-                link.target.vx += dx * targetRelAcceleration;
-                link.target.vy += dy * targetRelAcceleration;
+                link.source.vx += dx/d * sourceAcceleration;
+                link.source.vy += dy/d * sourceAcceleration;
+                link.target.vx += dx/d * targetAcceleration;
+                link.target.vy += dy/d * targetAcceleration;
             }
         } else { // Assume full node mesh if no links specified
             const tree = quadtree(nodes, d=>d.x, d=>d.y)
@@ -47,9 +47,9 @@ export default function() {
                     // Apply the Barnes-Hut approximation if possible.
                     if ((x2-x1) / d < theta) {
                         if (d > 0) {
-                            const relAcceleration = quad.value * etherStrength / (d*d);
-                            node.vx += dx * relAcceleration;
-                            node.vy += dy * relAcceleration;
+                            const acceleration = quad.value * etherStrength / (d*d);
+                            node.vx += dx/d * acceleration;
+                            node.vy += dy/d * acceleration;
                         }
                         return true;
                     }
@@ -58,9 +58,9 @@ export default function() {
                     else if (quad.length || d === 0) return;
 
                     do if (quad.data !== node) {
-                        const relAcceleration = charge(quad.data) * etherStrength / (d*d);
-                        node.vx += dx * relAcceleration;
-                        node.vy += dy * relAcceleration;
+                        const acceleration = charge(quad.data) * etherStrength / (d*d);
+                        node.vx += dx/d * acceleration;
+                        node.vy += dy/d * acceleration;
                     } while (quad = quad.next);
                 });
             }
