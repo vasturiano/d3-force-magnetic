@@ -1,6 +1,6 @@
 {
   "name": "d3-force-magnetic",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "A magnetic/electrostatic/gravitational link force type for the d3-force simulation engine.",
   "keywords": [
     "d3",
