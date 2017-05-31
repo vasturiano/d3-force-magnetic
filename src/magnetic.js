@@ -12,7 +12,7 @@ export default function() {
     function force(alpha) {
         if (links.length) { // Pre-set node pairs
             for (let i = 0; i < links.length; i++) {
-                const link = nodeLinks[i],
+                const link = links[i],
                     dx = link.target.x - link.source.x,
                     dy = link.target.y - link.source.y,
                     d = distance(dx, dy);
