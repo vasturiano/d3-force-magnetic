@@ -1,7 +1,7 @@
 {
   "name": "d3-force-magnetic",
   "version": "0.5.3",
-  "description": "A magnetic/electrostatic/gravitational link force type for the d3-force simulation engine.",
+  "description": "A natural attraction/repulsion force type for the d3-force simulation engine.",
   "keywords": [
     "d3",
     "d3-module",
