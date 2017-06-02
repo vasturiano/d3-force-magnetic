@@ -6,7 +6,7 @@ export default function() {
         links = [],
         id = (node => node.index),              // accessor: node unique id
         charge = (node => 100),                 // accessor: number (equivalent to node mass)
-        strength = (link => 1),                 // accessor: 0 <= number <= 1 (equivalent to G constant)
+        strength = (link => 1),                 // accessor: number (equivalent to G constant)
         theta = 0.9;
 
     function force(alpha) {
