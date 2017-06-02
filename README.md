@@ -7,7 +7,8 @@ This force can be applied system-wide to a group of nodes (using a Barnes-Hut ap
 
 The intensity of the force between two nodes is determined by the distance between them (`D`), the charge of the opposite node (`C`), the strenght of the link (`L`) and the simulation alpha (`A`), using the following formula: `ACL/D^2`.
 
-In the case of a full-mesh group of nodes, the strength of the links is equal for all node pairs, rendering `L` a system constant. When modelling gravity this would be your [gravitational constant](https://en.wikipedia.org/wiki/Gravitational_constant) `G`, while in an electrostatic system it would represent the [Coulomb's law](https://en.wikipedia.org/wiki/Coulomb%27s_law) constant `k`.
+In the case of a full-mesh group of nodes, the strength of the links is equal for all node pairs, rendering `L` a system constant. When modelling gravity this would be your [gravitational constant](https://en.wikipedia.org/wiki/Gravitational_constant) `G` (and `C` each node's mass), while in an electrostatic system it would represent the [Coulomb's law](https://en.wikipedia.org/wiki/Coulomb%27s_law) constant `k` (and `C` each node's electrical charge).
+
 Node charges (`C`) can be positive or negative. Positive means that this node will attract other nodes with the specified intensity, while a negative charge represents a repelling force towards other nodes. Keep in mind that, unlike electrical charge, two positive charges do not repel each other, and two opposite charges do not mutually attract each other, a node's charge sign merely represents the effect it has on other nodes.
 
 As example, this force can be used to [simulate accretion between particles](https://bl.ocks.org/vasturiano/27fbd16d7e9131fbc8e8e93113f9896c), or to [model orbits of celestial bodies](https://bl.ocks.org/vasturiano/5086628299fa6c1bae0094f93d112634).
