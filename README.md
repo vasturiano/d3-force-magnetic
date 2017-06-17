@@ -5,7 +5,7 @@
 An attraction/repulsion force type for the [d3-force](https://github.com/d3/d3-force) simulation engine. It follows the [inverse-square law](https://en.wikipedia.org/wiki/Inverse-square_law) (force intensity inversely proportional to the square of the distance), making it suitable for modelling natural occurring forces like gravity, electrostatic or magnetic.
 This force can be applied system-wide to a group of nodes (using a Barnes-Hut approximation for performance improvement) in which each node affects and is affected by every other node, or alternatively as a collection of specific links pairing two nodes together, with a dedicated intensity.
 
-The intensity of the force between two nodes is determined by the distance between them (`D`), the charge of the opposite node (`C`), the strenght of the link (`L`) and the simulation alpha (`A`), using the following formula: `ACL/D^2`.
+The intensity of the force between two nodes is determined by the distance between them (`D`), the charge of the opposite node (`C`), the strength of the link (`L`) and the simulation alpha (`A`), using the following formula: `ACL/D^2`.
 
 In the case of a full-mesh group of nodes, the strength of the links is equal for all node pairs, rendering `L` a system constant. When modelling gravity this would be your [gravitational constant](https://en.wikipedia.org/wiki/Gravitational_constant) `G` (and `C` each node's mass), while in an electrostatic system it would represent the [Coulomb's law](https://en.wikipedia.org/wiki/Coulomb%27s_law) constant `k` (and `C` each node's electrical charge).
 
