@@ -7,7 +7,8 @@ export default function() {
         id = (node => node.index),              // accessor: node unique id
         charge = (node => 100),                 // accessor: number (equivalent to node mass)
         strength = (link => 1),                 // accessor: number (equivalent to G constant)
-        polarity = ((q1, q2) => null),          // accessor: boolean or null (asymmetrical)
+        polarity = ((q1, q2) => null),          // boolean or null (asymmetrical)
+        distanceWeight = (d => 1/(d*d)),        // Intensity falls with the square of the distance (inverse-square law)
         theta = 0.9;
 
     function force(alpha) {
@@ -20,8 +21,7 @@ export default function() {
 
                 if (d === 0) continue;
 
-                // Intensity falls with the square of the distance (inverse-square law)
-                const relStrength = alpha * strength(link) / (d*d);
+                const relStrength = alpha * strength(link) * distanceWeight(d);
 
                 const qSrc = charge(link.source),
                     qTgt = charge(link.target);
@@ -49,7 +49,7 @@ export default function() {
                 tree.visit((quad, x1, _, x2) => {
                     if (!quad.value) return true;
 
-                    var dx = quad.x - node.x,
+                    const dx = quad.x - node.x,
                         dy = quad.y - node.y,
                         d = distance(dx, dy);
 
@@ -57,7 +57,7 @@ export default function() {
                     if ((x2-x1) / d < theta) {
                         if (d > 0) {
                             const otherQ = quad.value,
-                                acceleration = signedCharge(otherQ, polarity(nodeQ, otherQ)) * etherStrength / (d*d);
+                                acceleration = signedCharge(otherQ, polarity(nodeQ, otherQ)) * etherStrength * distanceWeight(d);
                             node.vx += dx/d * acceleration;
                             node.vy += dy/d * acceleration;
                         }
@@ -69,7 +69,7 @@ export default function() {
 
                     do if (quad.data !== node) {
                         const otherQ = charge(quad.data),
-                            acceleration = signedCharge(otherQ, polarity(nodeQ, otherQ)) * etherStrength / (d*d);
+                            acceleration = signedCharge(otherQ, polarity(nodeQ, otherQ)) * etherStrength * distanceWeight(d);
                         node.vx += dx/d * acceleration;
                         node.vy += dy/d * acceleration;
                     } while (quad = quad.next);
@@ -154,6 +154,11 @@ export default function() {
     // How force direction is determined (whether nodes should attract each other (boolean), or asymmetrical based on opposite node's charge sign (null))
     force.polarity = function(_) {
         return arguments.length ? (polarity = typeof _ === "function" ? _ : constant(+_), force) : polarity;
+    };
+
+    // How the force intensity relates to the distance between nodes
+    force.distanceWeight = function(_) {
+        return arguments.length ? (distanceWeight = typeof _ === "function" ? _ : constant(+_), force) : distanceWeight;
     };
 
     // Barnes-Hut approximation tetha threshold (for full-mesh mode)
