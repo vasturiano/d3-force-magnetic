@@ -29,13 +29,13 @@ export default function() {
                 // Set attract/repel polarity
                 const linkPolarity = polarity(qSrc, qTgt);
 
-                const sourceAcceleration = signedCharge(qSrc, linkPolarity) * relStrength;
-                const targetAcceleration = signedCharge(qTgt, linkPolarity) * relStrength;
+                const sourceAcceleration = signedCharge(qTgt, linkPolarity) * relStrength;
+                const targetAcceleration = signedCharge(qSrc, linkPolarity) * relStrength;
 
                 link.source.vx += dx/d * sourceAcceleration;
                 link.source.vy += dy/d * sourceAcceleration;
-                link.target.vx += dx/d * targetAcceleration;
-                link.target.vy += dy/d * targetAcceleration;
+                link.target.vx -= dx/d * targetAcceleration;
+                link.target.vy -= dy/d * targetAcceleration;
             }
         } else { // Assume full node mesh if no links specified
             const tree = quadtree(nodes, d=>d.x, d=>d.y)
