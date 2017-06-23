@@ -56,10 +56,7 @@ export default function() {
                     // Apply the Barnes-Hut approximation if possible.
                     if ((x2-x1) / d < theta) {
                         if (d > 0) {
-                            const otherQ = quad.value,
-                                acceleration = signedCharge(otherQ, polarity(nodeQ, otherQ)) * etherStrength * distanceWeight(d);
-                            node.vx += dx/d * acceleration;
-                            node.vy += dy/d * acceleration;
+                            applyAcceleration();
                         }
                         return true;
                     }
@@ -68,11 +65,16 @@ export default function() {
                     else if (quad.length || d === 0) return;
 
                     do if (quad.data !== node) {
-                        const otherQ = charge(quad.data),
-                            acceleration = signedCharge(otherQ, polarity(nodeQ, otherQ)) * etherStrength * distanceWeight(d);
+                        applyAcceleration();
+                    } while (quad = quad.next);
+
+                    //
+
+                    function applyAcceleration() {
+                        const acceleration = signedCharge(quad.value, polarity(nodeQ, quad.value)) * etherStrength * distanceWeight(d);
                         node.vx += dx/d * acceleration;
                         node.vy += dy/d * acceleration;
-                    } while (quad = quad.next);
+                    }
                 });
             }
         }
