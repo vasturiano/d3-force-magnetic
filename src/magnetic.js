@@ -47,15 +47,13 @@ export default function() {
                 const node = nodes[i],
                     nodeQ = charge(node);
                 tree.visit((quad, x1, _, x2) => {
-                    if (!quad.value) return true;
-
                     const dx = quad.x - node.x,
                         dy = quad.y - node.y,
                         d = distance(dx, dy);
 
                     // Apply the Barnes-Hut approximation if possible.
                     if ((x2-x1) / d < theta) {
-                        if (d > 0) {
+                        if (quad.value && d > 0) {
                             const otherQ = quad.value,
                                 acceleration = signedCharge(otherQ, polarity(nodeQ, otherQ)) * etherStrength * distanceWeight(d);
                             node.vx += dx/d * acceleration;
