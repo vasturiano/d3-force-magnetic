@@ -1,6 +1,6 @@
 {
   "name": "d3-force-magnetic",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "A natural attraction/repulsion force type for the d3-force simulation engine.",
   "keywords": [
     "d3",
