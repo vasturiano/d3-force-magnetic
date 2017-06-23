@@ -158,7 +158,7 @@ export default function() {
 
     // How the force intensity relates to the distance between nodes
     force.distanceWeight = function(_) {
-        return arguments.length ? (distanceWeight = typeof _ === "function" ? _ : constant(+_), force) : distanceWeight;
+        return arguments.length ? (distanceWeight = _, force) : distanceWeight;
     };
 
     // Barnes-Hut approximation tetha threshold (for full-mesh mode)
