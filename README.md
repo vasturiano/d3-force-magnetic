@@ -47,9 +47,3 @@ d3.forceSimulation()
 | <b>distanceWeight</b>([<i>fn</i>]) | Getter/setter for the distance relationship function (`fn(distance)`). This method defines how the absolute distance (*positive* `int`) between two nodes influences the intensity of the attraction force between them. | `d=>1/(d*d)` *(inverse-square)* |
 | <b>theta</b>([<i>number</i>]) | Getter/setter for the [Barnes-Hut approximation](https://en.wikipedia.org/wiki/Barnes%E2%80%93Hut_simulation) **θ** threshold value. This parameter is only applicable when using the full-mesh mode. It determines the threshold of how far the node needs to be from a particular quadtree region, relative to the region's width, in order for the approximation to be used, and therefore the accuracy of the force calculation. Longer distances (lower θs) will yield more accurate results, at the cost of performance. | 0.9 |
 
-## Local development
-
-```
-npm install
-npm run watch
-```
