@@ -22,9 +22,8 @@
     "name": "Vasco Asturiano",
     "url": "https://bl.ocks.org/vasturiano"
   },
-  "main": "dist/d3-force-magnetic.js",
+  "main": "dist/d3-force-magnetic.min.js",
   "module": "src/index",
-  "jsnext:main": "src/index",
   "repository": {
     "type": "git",
     "url": "https://github.com/vasturiano/d3-force-magnetic.git"
