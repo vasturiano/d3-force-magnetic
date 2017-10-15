@@ -7,10 +7,7 @@ export default {
     format: 'umd',
     moduleName: 'd3',
     plugins: [
-        nodeResolve({
-            jsnext: true,
-            main: true
-        }),
+        nodeResolve(),
         babel({
             presets: [
                 ["es2015", { "modules": false }]
