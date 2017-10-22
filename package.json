@@ -22,30 +22,34 @@
     "name": "Vasco Asturiano",
     "url": "https://bl.ocks.org/vasturiano"
   },
-  "main": "dist/d3-force-magnetic.min.js",
+  "unpkg": "dist/d3-force-magnetic.min.js",
+  "main": "dist/d3-force-magnetic.common.js",
   "module": "dist/d3-force-magnetic.mjs",
   "repository": {
     "type": "git",
     "url": "https://github.com/vasturiano/d3-force-magnetic.git"
   },
   "scripts": {
-    "build": "rm -rf dist && mkdir dist && rollup -c --banner \"$(preamble)\"",
+    "build": "rm -rf dist && mkdir dist && rollup -c",
     "watch": "rollup -c -w",
-    "minify": "uglifyjs dist/d3-force-magnetic.js -o dist/d3-force-magnetic.min.js -c -m --preamble \"$(preamble)\"",
-    "prepublish": "npm run build && npm run minify"
+    "minify": "uglifyjs dist/d3-force-magnetic.js -o dist/d3-force-pod.min.js -c -m --comments '/Version/'",
+    "build-module": "rollup -c rollup.config.module.js",
+    "prepublish": "npm run build && npm run minify && npm run build-module"
   },
   "dependencies": {
-    "d3-quadtree": "^1.0"
+    "d3-quadtree": "^1.0.3"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-plugin-external-helpers": "^6.22.0",
-    "babel-preset-es2015": "^6.24.1",
-    "package-preamble": "~0.0.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "rollup": "^0.50.0",
     "rollup-plugin-babel": "^3.0.2",
-    "rollup-plugin-node-resolve": "^3.0",
+    "rollup-plugin-commonjs": "^8.2.4",
+    "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-watch": "^4.3.1",
-    "uglify-js": "^3.0.28"
+    "uglify-js": "^3.1.5"
   }
 }

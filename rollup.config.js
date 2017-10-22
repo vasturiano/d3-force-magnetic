@@ -1,5 +1,7 @@
-import nodeResolve from 'rollup-plugin-node-resolve';
+import resolve from 'rollup-plugin-node-resolve';
+import commonJs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
+import { name, homepage, version } from './package.json';
 
 export default {
     input: 'src/index.js',
@@ -7,22 +9,14 @@ export default {
         {
             format: 'umd',
             name: 'd3',
-            file: 'dist/d3-force-magnetic.js',
+            file: `dist/${name}.js`,
             sourcemap: true
-        },
-        {
-            format: 'es',
-            file: 'dist/d3-force-magnetic.mjs'
         }
     ],
     plugins: [
-        nodeResolve(),
-        babel({
-            presets: [
-                ["es2015", { "modules": false }]
-            ],
-            plugins: ["external-helpers"],
-            babelrc: false
-        })
-    ]
+        resolve(),
+        commonJs(),
+        babel({ exclude: 'node_modules/**' })
+    ],
+    banner: `// Version ${version} ${name} - ${homepage}`
 };
