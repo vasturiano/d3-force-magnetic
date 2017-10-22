@@ -32,7 +32,7 @@
   "scripts": {
     "build": "rm -rf dist && mkdir dist && rollup -c",
     "watch": "rollup -c -w",
-    "minify": "uglifyjs dist/d3-force-magnetic.js -o dist/d3-force-pod.min.js -c -m --comments '/Version/'",
+    "minify": "uglifyjs dist/d3-force-magnetic.js -o dist/d3-force-magnetic.min.js -c -m --comments '/Version/'",
     "build-module": "rollup -c rollup.config.module.js",
     "prepublish": "npm run build && npm run minify && npm run build-module"
   },
