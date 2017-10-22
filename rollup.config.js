@@ -8,6 +8,7 @@ export default {
     output: [
         {
             format: 'umd',
+            extend: true,
             name: 'd3',
             file: `dist/${name}.js`,
             sourcemap: true
