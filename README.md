@@ -24,7 +24,7 @@ d3.forceMagnetic = require('d3-force-magnetic');
 ```
 or even
 ```
-<script src="//unpkg.com/d3-force-magnetic/dist/d3-force-magnetic.min.js"></script>
+<script src="//unpkg.com/d3-force-magnetic"></script>
 ```
 then
 ```
