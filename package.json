@@ -37,6 +37,8 @@
     "prepublish": "npm run build && npm run minify && npm run build-module"
   },
   "dependencies": {
+    "d3-binarytree": "~0.1",
+    "d3-octree": "~0.1",
     "d3-quadtree": "^1.0.3"
   },
   "devDependencies": {

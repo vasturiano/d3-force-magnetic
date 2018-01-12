@@ -1,172 +1,192 @@
 import constant from './constant';
+import {binarytree} from 'd3-binarytree';
 import {quadtree} from 'd3-quadtree';
+import {octree} from 'd3-octree';
 
 export default function() {
-    let nodes = [],
-        links = [],
-        id = (node => node.index),              // accessor: node unique id
-        charge = (node => 100),                 // accessor: number (equivalent to node mass)
-        strength = (link => 1),                 // accessor: number (equivalent to G constant)
-        polarity = ((q1, q2) => null),          // boolean or null (asymmetrical)
-        distanceWeight = (d => 1/(d*d)),        // Intensity falls with the square of the distance (inverse-square law)
-        theta = 0.9;
+  let nDim,
+    nodes = [],
+    links = [],
+    id = (node => node.index),        // accessor: node unique id
+    charge = (node => 100),         // accessor: number (equivalent to node mass)
+    strength = (link => 1),         // accessor: number (equivalent to G constant)
+    polarity = ((q1, q2) => null),      // boolean or null (asymmetrical)
+    distanceWeight = (d => 1/(d*d)),    // Intensity falls with the square of the distance (inverse-square law)
+    theta = 0.9;
 
-    function force(alpha) {
-        if (links.length) { // Pre-set node pairs
-            for (let i = 0; i < links.length; i++) {
-                const link = links[i],
-                    dx = link.target.x - link.source.x,
-                    dy = link.target.y - link.source.y,
-                    d = distance(dx, dy);
+  function force(alpha) {
+    if (links.length) { // Pre-set node pairs
+      for (let i = 0; i < links.length; i++) {
+        const link = links[i],
+          dx = link.target.x - link.source.x,
+          dy = (link.target.y - link.source.y) || 0,
+          dz = (link.target.z - link.target.z) || 0,
+          d = distance(dx, dy, dz);
 
-                if (d === 0) continue;
+        if (d === 0) continue;
 
-                const relStrength = alpha * strength(link) * distanceWeight(d);
+        const relStrength = alpha * strength(link) * distanceWeight(d);
 
-                const qSrc = charge(link.source),
-                    qTgt = charge(link.target);
+        const qSrc = charge(link.source),
+          qTgt = charge(link.target);
 
-                // Set attract/repel polarity
-                const linkPolarity = polarity(qSrc, qTgt);
+        // Set attract/repel polarity
+        const linkPolarity = polarity(qSrc, qTgt);
 
-                const sourceAcceleration = signedCharge(qTgt, linkPolarity) * relStrength;
-                const targetAcceleration = signedCharge(qSrc, linkPolarity) * relStrength;
+        const sourceAcceleration = signedCharge(qTgt, linkPolarity) * relStrength;
+        const targetAcceleration = signedCharge(qSrc, linkPolarity) * relStrength;
 
-                link.source.vx += dx/d * sourceAcceleration;
-                link.source.vy += dy/d * sourceAcceleration;
-                link.target.vx -= dx/d * targetAcceleration;
-                link.target.vy -= dy/d * targetAcceleration;
-            }
-        } else { // Assume full node mesh if no links specified
-            const tree = quadtree(nodes, d=>d.x, d=>d.y)
-                .visitAfter(quadAccumulate);
-
-            const etherStrength = alpha * strength();
-
-            for (let i = 0; i < nodes.length; i++) {
-                const node = nodes[i],
-                    nodeQ = charge(node);
-                tree.visit((quad, x1, _, x2) => {
-                    if (!quad.value) return true;
-
-                    const dx = quad.x - node.x,
-                        dy = quad.y - node.y,
-                        d = distance(dx, dy);
-
-                    // Apply the Barnes-Hut approximation if possible.
-                    if ((x2-x1) / d < theta) {
-                        if (d > 0) {
-                            applyAcceleration();
-                        }
-                        return true;
-                    }
-
-                    // Otherwise, process points directly.
-                    else if (quad.length || d === 0) return;
-
-                    do if (quad.data !== node) {
-                        applyAcceleration();
-                    } while (quad = quad.next);
-
-                    //
-
-                    function applyAcceleration() {
-                        const acceleration = signedCharge(quad.value, polarity(nodeQ, quad.value)) * etherStrength * distanceWeight(d);
-                        node.vx += dx/d * acceleration;
-                        node.vy += dy/d * acceleration;
-                    }
-                });
-            }
+        link.source.vx += dx/d * sourceAcceleration;
+        link.target.vx -= dx/d * targetAcceleration;
+        if (nDim > 1) {
+          link.source.vy += dy / d * sourceAcceleration;
+          link.target.vy -= dy / d * targetAcceleration;
         }
+        if (nDim > 2) {
+          link.source.vz += dz / d * sourceAcceleration;
+          link.target.vz -= dz / d * targetAcceleration;
+        }
+      }
+    } else { // Assume full node mesh if no links specified
+      const tree =
+          (nDim === 1 ? binarytree(nodes, d => d.x)
+          :(nDim === 2 ? quadtree(nodes, d => d.x, d => d.y)
+          :(nDim === 3 ? octree(nodes, d => d.x, d => d.y, d => d.z)
+          :null
+        ))).visitAfter(accumulate);
 
-        //
+      const etherStrength = alpha * strength();
 
-        function quadAccumulate(quad) {
-            var localCharge = 0, q, c, sumC = 0, x, y, i;
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i],
+          nodeQ = charge(node);
+        tree.visit((treeNode, x1, arg1, arg2, arg3) => {
+          if (!treeNode.value) return true;
+          const x2 = [arg1, arg2, arg3][nDim-1];
 
-            // For internal nodes, accumulate forces from child quadrants.
-            if (quad.length) {
-                for (x = y = i = 0; i < 4; ++i) {
-                    if ((q = quad[i]) && (c = Math.abs(q.value))) {
-                        localCharge += q.value, sumC += c, x += c * q.x, y += c * q.y;
-                    }
-                }
-                quad.x = x / sumC;
-                quad.y = y / sumC;
+          const dx = treeNode.x - node.x,
+            dy = (treeNode.y - node.y) || 0,
+            dz = (treeNode.z - node.z) || 0,
+            d = distance(dx, dy, dz);
+
+          // Apply the Barnes-Hut approximation if possible.
+          if ((x2-x1) / d < theta) {
+            if (d > 0) {
+              applyAcceleration();
             }
+            return true;
+          }
 
-            // For leaf nodes, accumulate forces from coincident quadrants.
-            else {
-                q = quad;
-                q.x = q.data.x;
-                q.y = q.data.y;
-                do localCharge += charge(q.data);
-                while (q = q.next);
-            }
+          // Otherwise, process points directly.
+          else if (treeNode.length || d === 0) return;
 
-            quad.value = localCharge;
-        }
+          do if (treeNode.data !== node) {
+            applyAcceleration();
+          } while (treeNode = treeNode.next);
 
-        function signedCharge(q, polarity) {
-            if (polarity === null) return q; // No change with null polarity
-            return Math.abs(q) * (polarity ? 1 : -1);
-        }
+          //
 
-        function distance(x, y) {
-            return Math.sqrt(x*x + y*y);
-        }
+          function applyAcceleration() {
+            const acceleration = signedCharge(treeNode.value, polarity(nodeQ, treeNode.value)) * etherStrength * distanceWeight(d);
+            node.vx += dx/d * acceleration;
+            if (nDim > 1) { node.vy += dy/d * acceleration; }
+            if (nDim > 2) { node.vz += dz/d * acceleration; }
+          }
+        });
+      }
     }
 
-    function initialize() {
-        const nodesById = {};
-        nodes.forEach(node => {
-            nodesById[id(node)] = node;
-        });
+    //
 
-        links.forEach(link => {
-            if (typeof link.source !== "object") link.source = nodesById[link.source] || link.source;
-            if (typeof link.target !== "object") link.target = nodesById[link.target] || link.target;
-        });
+    function accumulate(treeNode) {
+      let localCharge = 0, q, c, weight = 0, x, y, z, i;
+
+      // For internal nodes, accumulate forces from child tree-nodes (segments/quadrants/octants).
+      if (treeNode.length) {
+        for (x = y = z = i = 0; i < 4; ++i) {
+          if ((q = treeNode[i]) && (c = Math.abs(q.value))) {
+            localCharge += q.value, weight += c, x += c * (q.x || 0), y += c * (q.y || 0), z += c * (q.z || 0);
+          }
+        }
+        treeNode.x = x / weight;
+        if (nDim > 1) { treeNode.y = y / weight; }
+        if (nDim > 2) { treeNode.z = z / weight; }
+      }
+
+      // For leaf nodes, accumulate forces from coincident tree nodes.
+      else {
+        q = treeNode;
+        q.x = q.data.x;
+        if (nDim > 1) { q.y = q.data.y; }
+        if (nDim > 2) { q.z = q.data.z; }
+        do localCharge += charge(q.data);
+        while (q = q.next);
+      }
+
+      treeNode.value = localCharge;
     }
 
-    force.initialize = function(_) {
-        nodes = _;
-        initialize();
-    };
+    function signedCharge(q, polarity) {
+      if (polarity === null) return q; // No change with null polarity
+      return Math.abs(q) * (polarity ? 1 : -1);
+    }
 
-    force.links = function(_) {
-        return arguments.length ? (links = _, initialize(), force) : links;
-    };
+    function distance(x, y, z) {
+      return Math.sqrt(x*x + y*y + z*z);
+    }
+  }
 
-    // Node id
-    force.id = function(_) {
-        return arguments.length ? (id = _, force) : id;
-    };
+  function initialize() {
+    const nodesById = {};
+    nodes.forEach(node => {
+      nodesById[id(node)] = node;
+    });
 
-    // Node capacity to attract (positive) or repel (negative)
-    force.charge = function(_) {
-        return arguments.length ? (charge = typeof _ === "function" ? _ : constant(+_), force) : charge;
-    };
+    links.forEach(link => {
+      if (typeof link.source !== "object") link.source = nodesById[link.source] || link.source;
+      if (typeof link.target !== "object") link.target = nodesById[link.target] || link.target;
+    });
+  }
 
-    // Link strength (ability of the medium to propagate charges)
-    force.strength = function(_) {
-        return arguments.length ? (strength = typeof _ === "function" ? _ : constant(+_), force) : strength;
-    };
+  force.initialize = function(initNodes, numDimensions = 2) {
+    nodes = initNodes;
+    nDim = numDimensions;
+    initialize();
+  };
 
-    // How force direction is determined (whether nodes should attract each other (boolean), or asymmetrical based on opposite node's charge sign (null))
-    force.polarity = function(_) {
-        return arguments.length ? (polarity = typeof _ === "function" ? _ : constant(+_), force) : polarity;
-    };
+  force.links = function(_) {
+    return arguments.length ? (links = _, initialize(), force) : links;
+  };
 
-    // How the force intensity relates to the distance between nodes
-    force.distanceWeight = function(_) {
-        return arguments.length ? (distanceWeight = _, force) : distanceWeight;
-    };
+  // Node id
+  force.id = function(_) {
+    return arguments.length ? (id = _, force) : id;
+  };
 
-    // Barnes-Hut approximation tetha threshold (for full-mesh mode)
-    force.theta = function(_) {
-        return arguments.length ? (theta = _, force) : theta;
-    };
+  // Node capacity to attract (positive) or repel (negative)
+  force.charge = function(_) {
+    return arguments.length ? (charge = typeof _ === "function" ? _ : constant(+_), force) : charge;
+  };
 
-    return force;
+  // Link strength (ability of the medium to propagate charges)
+  force.strength = function(_) {
+    return arguments.length ? (strength = typeof _ === "function" ? _ : constant(+_), force) : strength;
+  };
+
+  // How force direction is determined (whether nodes should attract each other (boolean), or asymmetrical based on opposite node's charge sign (null))
+  force.polarity = function(_) {
+    return arguments.length ? (polarity = typeof _ === "function" ? _ : constant(+_), force) : polarity;
+  };
+
+  // How the force intensity relates to the distance between nodes
+  force.distanceWeight = function(_) {
+    return arguments.length ? (distanceWeight = _, force) : distanceWeight;
+  };
+
+  // Barnes-Hut approximation tetha threshold (for full-mesh mode)
+  force.theta = function(_) {
+    return arguments.length ? (theta = _, force) : theta;
+  };
+
+  return force;
 }
