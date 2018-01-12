@@ -13,6 +13,8 @@ Node charges (`C`) can be positive or negative. Positive means that this node wi
 
 As example, this force can be used to [simulate accretion between particles](https://bl.ocks.org/vasturiano/27fbd16d7e9131fbc8e8e93113f9896c), or to [model orbits of celestial bodies](https://bl.ocks.org/vasturiano/54dd054d22be863da5afe2db02e033e2).
 
+This force plugin is also compatible with [d3-force-3d](https://github.com/vasturiano/d3-force-3d) and can function in a one, two (default) or three dimensional space.
+
 ## Quick start
 
 ```
