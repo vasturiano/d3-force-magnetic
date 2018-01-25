@@ -36,8 +36,8 @@ export default function() {
         const sourceAcceleration = signedCharge(qTgt, linkPolarity) * relStrength;
         const targetAcceleration = signedCharge(qSrc, linkPolarity) * relStrength;
 
-        link.source.vx += dx/d * sourceAcceleration;
-        link.target.vx -= dx/d * targetAcceleration;
+        link.source.vx += dx / d * sourceAcceleration;
+        link.target.vx -= dx / d * targetAcceleration;
         if (nDim > 1) {
           link.source.vy += dy / d * sourceAcceleration;
           link.target.vy -= dy / d * targetAcceleration;
