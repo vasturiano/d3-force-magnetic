@@ -2,7 +2,7 @@ import babel from 'rollup-plugin-babel';
 import { name, dependencies } from './package.json';
 
 export default {
-  input: 'src/index.js',
+  input: 'src/magnetic.js',
   output: [
     {
       format: 'cjs',
