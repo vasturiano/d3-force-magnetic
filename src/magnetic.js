@@ -103,7 +103,7 @@ export default function() {
 
       // For internal nodes, accumulate forces from child tree-nodes (segments/quadrants/octants).
       if (treeNode.length) {
-        for (x = y = z = i = 0; i < 4; ++i) {
+        for (x = y = z = i = 0; i < (2 ** nDim); ++i) {
           if ((q = treeNode[i]) && (c = Math.abs(q.value))) {
             localCharge += q.value, weight += c, x += c * (q.x || 0), y += c * (q.y || 0), z += c * (q.z || 0);
           }
