@@ -148,11 +148,9 @@ export default function() {
     });
   }
 
-  force.initialize = function(initNodes, nDims) {
-    const numDimensions = [1,2,3].includes(nDims) ? nDims : 2;
-
+  force.initialize = function(initNodes, ...args) {
     nodes = initNodes;
-    nDim = numDimensions;
+    nDim = args.find(arg => [1, 2, 3].includes(arg)) || 2;
     initialize();
   };
 
