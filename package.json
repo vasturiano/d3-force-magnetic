@@ -31,10 +31,8 @@
   },
   "scripts": {
     "build": "rimraf dist && rollup -c",
-    "dev": "rollup -c -w",
-    "minify": "terser dist/d3-force-magnetic.js -o dist/d3-force-magnetic.min.js -c -m --comments '/Version/'",
-    "build-module": "rollup -c rollup.config.module.js",
-    "prepare": "npm run build && npm run minify && npm run build-module"
+    "dev": "rollup -w -c",
+    "prepare": "npm run build"
   },
   "files": [
     "dist/**/*"
@@ -42,18 +40,18 @@
   "dependencies": {
     "d3-binarytree": "~0.1",
     "d3-octree": "~0.1",
-    "d3-quadtree": "^1.0.7"
+    "d3-quadtree": "^2.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.7",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
-    "@babel/preset-env": "^7.8.7",
-    "@rollup/plugin-commonjs": "^11.0.2",
-    "@rollup/plugin-node-resolve": "^7.1.1",
+    "@babel/core": "^7.13.10",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.13.8",
+    "@babel/preset-env": "^7.13.10",
+    "@rollup/plugin-commonjs": "^17.1.0",
+    "@rollup/plugin-node-resolve": "^11.2.0",
     "rimraf": "^3.0.2",
-    "rollup": "^2.0.6",
+    "rollup": "^2.41.2",
     "rollup-plugin-babel": "^4.4.0",
-    "terser": "^4.6.6"
+    "rollup-plugin-terser": "^7.0.2"
   }
 }
