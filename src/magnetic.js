@@ -148,7 +148,9 @@ export default function() {
     });
   }
 
-  force.initialize = function(initNodes, numDimensions = 2) {
+  force.initialize = function(initNodes, nDims) {
+    const numDimensions = [1,2,3].includes(nDims) ? nDims : 2;
+
     nodes = initNodes;
     nDim = numDimensions;
     initialize();
