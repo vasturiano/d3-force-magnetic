@@ -3,7 +3,7 @@ d3.forceMagnetic
 
 [![NPM package][npm-img]][npm-url]
 [![Build Size][build-size-img]][build-size-url]
-[![Dependencies][dependencies-img]][dependencies-url]
+[![NPM Downloads][npm-downloads-img]][npm-downloads-url]
 
 An attraction/repulsion force type for the [d3-force](https://github.com/d3/d3-force) simulation engine. By default, it follows the [inverse-square law](https://en.wikipedia.org/wiki/Inverse-square_law) (force intensity inversely proportional to the square of the distance), making it suitable for modelling natural occurring forces like gravity, electrostatic or magnetic.
 This force can be applied system-wide to a group of nodes (using a Barnes-Hut approximation for performance improvement) in which each node affects and is affected by every other node, or alternatively as a collection of specific links pairing two nodes together, with a dedicated intensity.
@@ -20,19 +20,19 @@ This force plugin is also compatible with [d3-force-3d](https://github.com/vastu
 
 ## Quick start
 
-```
+```js
 import d3ForceMagnetic from 'd3-force-magnetic';
 ```
 or
-```
+```js
 d3.forceMagnetic = require('d3-force-magnetic');
 ```
 or even
-```
+```html
 <script src="//unpkg.com/d3-force-magnetic"></script>
 ```
 then
-```
+```js
 d3.forceSimulation()
     .nodes(<myNodes>)
     .force('magnetic', d3.forceMagnetic()
@@ -57,9 +57,9 @@ d3.forceSimulation()
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L398E7PKP47E8&currency_code=USD&source=url) If this project has helped you and you'd like to contribute back, you can always [buy me a ☕](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L398E7PKP47E8&currency_code=USD&source=url)!
 
 
-[npm-img]: https://img.shields.io/npm/v/d3-force-magnetic.svg
+[npm-img]: https://img.shields.io/npm/v/d3-force-magnetic
 [npm-url]: https://npmjs.org/package/d3-force-magnetic
-[build-size-img]: https://img.shields.io/bundlephobia/minzip/d3-force-magnetic.svg
+[build-size-img]: https://img.shields.io/bundlephobia/minzip/d3-force-magnetic
 [build-size-url]: https://bundlephobia.com/result?p=d3-force-magnetic
-[dependencies-img]: https://img.shields.io/david/vasturiano/d3-force-magnetic.svg
-[dependencies-url]: https://david-dm.org/vasturiano/d3-force-magnetic
+[npm-downloads-img]: https://img.shields.io/npm/dt/d3-force-magnetic
+[npm-downloads-url]: https://www.npmtrends.com/d3-force-magnetic
