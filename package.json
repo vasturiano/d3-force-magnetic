@@ -22,9 +22,14 @@
     "name": "Vasco Asturiano",
     "url": "https://bl.ocks.org/vasturiano"
   },
+  "type": "module",
   "unpkg": "dist/d3-force-magnetic.min.js",
-  "main": "dist/d3-force-magnetic.common.js",
-  "module": "dist/d3-force-magnetic.module.js",
+  "main": "dist/d3-force-magnetic.mjs",
+  "module": "dist/d3-force-magnetic.mjs",
+  "exports": {
+    "umd": "./dist/d3-force-magnetic.min.js",
+    "default": "./dist/d3-force-magnetic.mjs"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/vasturiano/d3-force-magnetic.git"
@@ -38,20 +43,21 @@
     "dist/**/*"
   ],
   "dependencies": {
-    "d3-binarytree": "~0.1",
-    "d3-octree": "~0.1",
-    "d3-quadtree": "^2.0.0"
+    "d3-binarytree": "~0.2",
+    "d3-octree": "~0.2",
+    "d3-quadtree": "2 - 3"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.10",
-    "@babel/plugin-proposal-class-properties": "^7.13.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.13.8",
-    "@babel/preset-env": "^7.13.10",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-commonjs": "^17.1.0",
-    "@rollup/plugin-node-resolve": "^11.2.0",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.41.2",
-    "rollup-plugin-terser": "^7.0.2"
+    "@babel/core": "^7.20.12",
+    "@babel/preset-env": "^7.20.2",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-terser": "^0.4.0",
+    "rimraf": "^4.1.2",
+    "rollup": "^3.14.0"
+  },
+  "engines": {
+    "node": ">=12"
   }
 }

@@ -23,11 +23,7 @@ This force plugin is also compatible with [d3-force-3d](https://github.com/vastu
 ```js
 import d3ForceMagnetic from 'd3-force-magnetic';
 ```
-or
-```js
-d3.forceMagnetic = require('d3-force-magnetic');
-```
-or even
+or using a *script* tag
 ```html
 <script src="//unpkg.com/d3-force-magnetic"></script>
 ```
