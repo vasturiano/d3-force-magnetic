@@ -14,7 +14,7 @@ In the case of a full-mesh group of nodes, the strength of the links is equal fo
 
 Node charges (`C`) can be positive or negative. Positive means that this node will attract other nodes with the specified intensity, while a negative charge represents a repelling force towards other nodes. Keep in mind that, unlike electrical charge, two positive charges do not repel each other, and two opposite charges do not mutually attract each other, a node's charge sign merely represents the effect it has on other nodes. This behavior can however be modified using the `polarity` method to follow the *attraction-of-opposites* or any other attraction logic.
 
-As example, this force can be used to [simulate accretion between particles](https://bl.ocks.org/vasturiano/27fbd16d7e9131fbc8e8e93113f9896c), or to [model orbits of celestial bodies](https://bl.ocks.org/vasturiano/54dd054d22be863da5afe2db02e033e2).
+As example, this force can be used to [simulate accretion between particles](https://observablehq.com/@vasturiano/accretion), or to [model orbits of celestial bodies](https://observablehq.com/@vasturiano/force-simulated-solar-system).
 
 This force plugin is also compatible with [d3-force-3d](https://github.com/vasturiano/d3-force-3d) and can function in a one, two (default) or three dimensional space.
 
