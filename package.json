@@ -43,8 +43,8 @@
     "dist/**/*"
   ],
   "dependencies": {
-    "d3-binarytree": "~0.2",
-    "d3-octree": "~0.2",
+    "d3-binarytree": "1",
+    "d3-octree": "1",
     "d3-quadtree": "2 - 3"
   },
   "devDependencies": {
