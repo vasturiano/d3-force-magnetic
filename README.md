@@ -25,7 +25,7 @@ import d3ForceMagnetic from 'd3-force-magnetic';
 ```
 or using a *script* tag
 ```html
-<script src="//unpkg.com/d3-force-magnetic"></script>
+<script src="//cdn.jsdelivr.net/npm/d3-force-magnetic"></script>
 ```
 then
 ```js
