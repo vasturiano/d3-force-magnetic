@@ -23,6 +23,7 @@
     "url": "https://github.com/vasturiano"
   },
   "type": "module",
+  "jsdelivr": "dist/d3-force-magnetic.min.js",
   "unpkg": "dist/d3-force-magnetic.min.js",
   "main": "dist/d3-force-magnetic.mjs",
   "module": "dist/d3-force-magnetic.mjs",
