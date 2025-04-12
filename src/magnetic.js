@@ -20,7 +20,7 @@ export default function() {
         const link = links[i],
           dx = link.target.x - link.source.x,
           dy = (link.target.y - link.source.y) || 0,
-          dz = (link.target.z - link.target.z) || 0,
+          dz = (link.target.z - link.source.z) || 0,
           d = distance(dx, dy, dz);
 
         if (d === 0) continue;
