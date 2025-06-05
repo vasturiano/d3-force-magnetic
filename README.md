@@ -48,9 +48,10 @@ d3.forceSimulation()
 | <b>distanceWeight</b>([<i>fn</i>]) | Getter/setter for the distance relationship function (`fn(distance)`). This method defines how the absolute distance (*positive* `int`) between two nodes influences the intensity of the attraction force between them. | `d=>1/(d*d)` *(inverse-square)* |
 | <b>theta</b>([<i>number</i>]) | Getter/setter for the [Barnes-Hut approximation](https://en.wikipedia.org/wiki/Barnes%E2%80%93Hut_simulation) **θ** threshold value. This parameter is only applicable when using the full-mesh mode. It determines the threshold of how far the node needs to be from a particular quadtree region, relative to the region's width, in order for the approximation to be used, and therefore the accuracy of the force calculation. Longer distances (lower θs) will yield more accurate results, at the cost of performance. | 0.9 |
 
-## Giving Back
+## ❤️ Support This Project
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L398E7PKP47E8&currency_code=USD&source=url) If this project has helped you and you'd like to contribute back, you can always [buy me a ☕](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L398E7PKP47E8&currency_code=USD&source=url)!
+If you find this module useful and would like to support its development, you can [buy me a ☕](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L398E7PKP47E8&currency_code=USD&source=url). Your contributions help keep open-source sustainable!
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=L398E7PKP47E8&currency_code=USD&source=url)
 
 
 [npm-img]: https://img.shields.io/npm/v/d3-force-magnetic
